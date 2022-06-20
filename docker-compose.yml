@@ -1,0 +1,25 @@
+version: "3"
+services:
+  tests:
+    container_name: tests
+    hostname: tests
+    image: littleof/php:8.1-cli-swoole
+    volumes:
+      - ./:/app-src/
+    ports:
+      - "9501:9501"
+    restart: on-failure
+    environment:
+      - NODE=dev  #节点名称
+    network_mode: bridge
+    command:
+      - bash
+      - -c
+      - |
+        php -v
+        cd /app-src
+        composer install -o
+        composer dump-autoload -o
+        date
+        rm -rf runtime/container
+        php bin/hyperf.php start
