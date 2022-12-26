@@ -24,7 +24,8 @@ ENV EXTRA_LIBS \
   zlib-dev \
   libintl \
   gettext-dev \
-  tidyhtml-dev
+  tidyhtml-dev \
+  c-ares-dev
 
 RUN \
   set -ex && \
