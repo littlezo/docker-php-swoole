@@ -21,7 +21,8 @@ ENV EXTRA_LIBS \
   openssl-dev \
   pcre-dev \
   pcre2-dev \
-  zlib-dev
+  zlib-dev \
+  libintl
 
 RUN \
   set -ex && \
