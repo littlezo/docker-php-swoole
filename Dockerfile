@@ -1,45 +1,46 @@
-FROM littleof/php:latest
-
-
-RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends openssl libssl-dev build-essential \
-    libidn11-dev libidn11 libcurl4-openssl-dev libc-ares-dev; \
-    pecl update-channels; \
-    pecl install --configureoptions 'enable-openssl="yes" \
-    enable-http2="yes" enable-swoole-json="yes" enable-swoole-curl="yes" \
-    enable-cares="yes" with-openssl-dir="/usr"' swoole; \
-    docker-php-ext-enable swoole; \
-    docker-php-source delete; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static; \
-    rm -rf /tmp/pear ~/.pearrc; \
-    rm -rf /tmp/*
+FROM littleof/php:8.2.0-cli-alpine3.17
 
 ENV EXTRA_EXT \
-    bcmath bz2 calendar exif ffi gd gettext intl \
-    mysqli pcntl pdo_mysql pdo_pgsql shmop soap \
-    sockets sysvmsg sysvsem sysvshm tidy zip
-ENV EXTRA_LIBS \
-    libbz2-dev \
-    libffi-dev \
-    zlib1g-dev \
-    libpng-dev \
-    libicu-dev \
-    libpq-dev \
-    libxml2-dev \
-    libtidy-dev \
-    libzip-dev
+  bcmath bz2 calendar exif ffi gd gettext intl \
+  mysqli pcntl pdo_mysql pdo_pgsql ds shmop soap \
+  sockets sysvmsg sysvsem sysvshm tidy zip
 
-RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends $EXTRA_LIBS; \
-    docker-php-ext-install $EXTRA_EXT; \
-    docker-php-source delete; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static; \
-    rm -rf /tmp/pear ~/.pearrc; \
-    rm -rf /tmp/*
+ENV EXTRA_LIBS \
+  autoconf \
+  libbz2 \
+  libffi-dev \
+  zlib-dev \
+  libpng-dev \
+  icu-dev \
+  libpq-dev \
+  libxml2-dev \
+  libzip-dev \
+  curl-dev \
+  linux-headers \
+  postgresql-dev \
+  openssl-dev \
+  pcre-dev \
+  pcre2-dev \
+  zlib-dev
+
+RUN \
+  set -ex && \
+  composer self-update --clean-backups && \
+  apk update && \
+  apk add --no-cache libstdc++ libpq && \
+  apk add --no-cache --update --virtual .build-deps $PHPIZE_DEPS $EXTRA_LIBS && \
+  pecl channel-update pecl.php.net && \
+  docker-php-ext-install $EXTRA_EXT; \
+  docker-php-ext-enable redis && \
+  docker-php-ext-install sockets && \
+  docker-php-source extract && \
+  pecl install --configureoptions 'enable-mysqlnd="yes" enable-openssl="yes" \
+  enable-http2="yes" enable-swoole-json="yes" enable-swoole-curl="yes" \
+  enable-cares="yes" with-openssl-dir="/usr"' swoole; \
+  docker-php-ext-enable swoole; \
+  docker-php-source delete; \
+  apk del .build-deps \
+  rm -rf /var/lib/apt/lists/* $HOME/.composer/*-old.phar /usr/bin/qemu-*-static
 
 RUN set -eux; \
     php --version; \
