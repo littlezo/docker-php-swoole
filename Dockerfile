@@ -22,7 +22,8 @@ ENV EXTRA_LIBS \
   pcre-dev \
   pcre2-dev \
   zlib-dev \
-  libintl
+  libintl \
+  gettext-dev
 
 RUN \
   set -ex && \
