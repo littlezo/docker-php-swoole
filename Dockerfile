@@ -23,7 +23,8 @@ ENV EXTRA_LIBS \
   pcre2-dev \
   zlib-dev \
   libintl \
-  gettext-dev
+  gettext-dev \
+  tidyhtml-dev
 
 RUN \
   set -ex && \
