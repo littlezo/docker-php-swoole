@@ -7,11 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Login to Docker Hub
       uses: docker/login-action@v2
@@ -19,5 +16,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+    - name: Build 8.2 image
       run: docker build . --file Dockerfile --tag littleof/php:cli-8.2.0-alpine3.17-swoole-5.0.1
+    - name: Build 8.1 image
+      run: docker build . --file Dockerfile-8.1 --tag littleof/php:cli-8.2.0-alpine3.17-swoole-5.0.1
