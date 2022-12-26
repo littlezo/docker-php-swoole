@@ -2,7 +2,7 @@ FROM littleof/php:8.2.0-cli-alpine3.17
 
 ENV EXTRA_EXT \
   bcmath bz2 calendar exif ffi gd gettext intl \
-  mysqli pcntl pdo_mysql pdo_pgsql ds shmop soap \
+  mysqli pcntl pdo_mysql pdo_pgsql shmop soap \
   sockets sysvmsg sysvsem sysvshm tidy zip
 
 ENV EXTRA_LIBS \
